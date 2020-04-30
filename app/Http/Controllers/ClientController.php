@@ -40,7 +40,11 @@ class ClientController extends Controller
         // return "yes store";
 
         //validation
-
+        $this->validate($request,[
+            
+            'phone' => 'required|min:11|numeric|unique:clients|regex:/(01)[0-9]{9}/',
+            'address' => 'required'
+            ]);
         //store
         $client = new Client;
         $client->phone = $request->phone;
