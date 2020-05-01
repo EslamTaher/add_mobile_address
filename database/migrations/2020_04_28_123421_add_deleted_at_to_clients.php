@@ -15,6 +15,7 @@ class AddDeletedAtToClients extends Migration
     {
         Schema::table('clients', function (Blueprint $table) {
             $table->softDeletes();
+            
         });
     }
 

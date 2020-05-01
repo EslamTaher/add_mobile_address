@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Client;
 use Auth;
@@ -42,19 +42,25 @@ class ClientController extends Controller
         //validation
         $this->validate($request,[
             
-            'phone' => 'required|min:11|numeric|unique:clients|regex:/(01)[0-9]{9}/',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|digits:11|numeric|unique:clients',
+            // Rule::unique('users')->ignore($user->id)],
             'address' => 'required'
             ]);
         //store
-        $client = new Client;
-        $client->phone = $request->phone;
-        $client->address = $request->address;
-        $client->client_id=Auth::id();
-        $client->username= Auth::user()->name;
-        $client->save();
+        // $client = new Client;
+        // $client->phone = $request->phone;
+        // $client->address = $request->address;
+        // $client->client_id=Auth::id();
+        // $client->username= Auth::user()->name;
+        // $client->save();
+        $r=$request->all();
+        $r['client_id'] = Auth::id();
+        $r['username'] = Auth::user()->name;
+        // dd($request->all());
+        Client::create($r);
 
         //redirect
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success','Phone has been added successfully');
     }
 
     /**
@@ -92,9 +98,10 @@ class ClientController extends Controller
 
         //update
         $client= Client::find($id);
-        $client->phone = $request->phone;
-        $client->address = $request->address;
-        $client->save();
+        // $client->phone = $request->phone;
+        // $client->address = $request->address;
+        // $client->save();
+        $client->update($request->all());
 
         //redirect
         return redirect()->route('home'); 
